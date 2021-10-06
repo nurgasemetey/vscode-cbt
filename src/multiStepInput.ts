@@ -50,12 +50,12 @@ export async function multiStepInput(context: ExtensionContext) {
 			placeholder: 'Pick a resource group',
 			items: resourceGroups,
 			activeItem: typeof state.resourceGroup !== 'string' ? state.resourceGroup : undefined,
-			buttons: [createResourceGroupButton],
+			// buttons: [createResourceGroupButton],
 			shouldResume: shouldResume
 		});
-		if (pick instanceof MyButton) {
-			return (input: MultiStepInput) => inputResourceGroupName(input, state);
-		}
+		// if (pick instanceof MyButton) {
+		// 	return (input: MultiStepInput) => inputResourceGroupName(input, state);
+		// }
 		state.resourceGroup = pick;
 		return (input: MultiStepInput) => inputName(input, state);
 	}
