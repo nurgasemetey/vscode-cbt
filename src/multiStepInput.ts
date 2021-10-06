@@ -12,18 +12,8 @@ import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton,
  */
 export async function multiStepInput(context: ExtensionContext) {
 
-	class MyButton implements QuickInputButton {
-		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
-	}
-
-	const createResourceGroupButton = new MyButton({
-		dark: Uri.file(context.asAbsolutePath('resources/dark/add.svg')),
-		light: Uri.file(context.asAbsolutePath('resources/light/add.svg')),
-	}, 'Create Resource Group');
-
 	const resourceGroups: QuickPickItem[] = ['vscode-data-function', 'vscode-appservice-microservices', 'vscode-appservice-monitor', 'vscode-appservice-preview', 'vscode-appservice-prod']
 		.map(label => ({ label }));
-
 
 	interface State {
 		title: string;
@@ -104,21 +94,6 @@ export async function multiStepInput(context: ExtensionContext) {
 		// return (input: MultiStepInput) => pickRuntime(input, state);
 	}
 
-	async function pickRuntime(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.alternativeThought === 'string' ? 1 : 0;
-		const runtimes = await getAvailableRuntimes(state.resourceGroup!, undefined /* TODO: token */);
-		// TODO: Remember currently active item when navigating back.
-		state.runtime = await input.showQuickPick({
-			title,
-			step: 5 + additionalSteps,
-			totalSteps: 5 + additionalSteps,
-			placeholder: 'Pick a runtime',
-			items: runtimes,
-			activeItem: state.runtime,
-			shouldResume: shouldResume
-		});
-	}
-
 	function shouldResume() {
 		// Could show a notification with the option to resume.
 		return new Promise<boolean>((resolve, reject) => {
@@ -132,15 +107,8 @@ export async function multiStepInput(context: ExtensionContext) {
 		return name === 'vscode' ? 'Name not unique' : undefined;
 	}
 
-	async function getAvailableRuntimes(resourceGroup: QuickPickItem | string, token?: CancellationToken): Promise<QuickPickItem[]> {
-		// ...retrieve...
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		return ['Node 8.9', 'Node 6.11', 'Node 4.5']
-			.map(label => ({ label }));
-	}
-
 	const state = await collectInputs();
-	window.showInformationMessage(`Creating Application Service '${state.challengeThought} ${state.automaticThought}'`);
+	window.showInformationMessage(`Creating Application Service '${state.challengeThought} ${state.automaticThought} ${state.alternativeThought}'`);
 }
 
 
