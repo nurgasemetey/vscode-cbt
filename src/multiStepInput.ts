@@ -53,25 +53,22 @@ export async function multiStepInput(context: ExtensionContext) {
 			// buttons: [createResourceGroupButton],
 			shouldResume: shouldResume
 		});
-		// if (pick instanceof MyButton) {
-		// 	return (input: MultiStepInput) => inputResourceGroupName(input, state);
-		// }
 		state.resourceGroup = pick;
 		return (input: MultiStepInput) => inputName(input, state);
 	}
 
-	async function inputResourceGroupName(input: MultiStepInput, state: Partial<State>) {
-		state.resourceGroup = await input.showInputBox({
-			title,
-			step: 2,
-			totalSteps: 4,
-			value: typeof state.resourceGroup === 'string' ? state.resourceGroup : '',
-			prompt: 'Choose a unique name for the resource group',
-			validate: validateNameIsUnique,
-			shouldResume: shouldResume
-		});
-		return (input: MultiStepInput) => inputName(input, state);
-	}
+	// async function inputResourceGroupName(input: MultiStepInput, state: Partial<State>) {
+	// 	state.resourceGroup = await input.showInputBox({
+	// 		title,
+	// 		step: 2,
+	// 		totalSteps: 4,
+	// 		value: typeof state.resourceGroup === 'string' ? state.resourceGroup : '',
+	// 		prompt: 'Choose a unique name for the resource group',
+	// 		validate: validateNameIsUnique,
+	// 		shouldResume: shouldResume
+	// 	});
+	// 	return (input: MultiStepInput) => inputName(input, state);
+	// }
 
 	async function inputName(input: MultiStepInput, state: Partial<State>) {
 		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
