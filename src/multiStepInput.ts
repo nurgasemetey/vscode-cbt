@@ -30,9 +30,10 @@ export async function multiStepInput(context: ExtensionContext) {
 		step: number;
 		totalSteps: number;
 		resourceGroup: QuickPickItem | string;
-		name: string;
+		challengeThought: string;
 		runtime: QuickPickItem;
 		automaticThought:string;
+		alternativeThought:string;
 	}
 
 	async function collectInputs() {
@@ -63,39 +64,54 @@ export async function multiStepInput(context: ExtensionContext) {
 			title,
 			step: 2+additionalSteps,
 			totalSteps: 4+additionalSteps,
-			placeholder: 'Pick a resource group',
+			placeholder: 'Pick a pattern',
 			items: resourceGroups,
 			activeItem: typeof state.resourceGroup !== 'string' ? state.resourceGroup : undefined,
 			// buttons: [createResourceGroupButton],
 			shouldResume: shouldResume
 		});
 		state.resourceGroup = pick;
-		return (input: MultiStepInput) => inputName(input, state);
+		return (input: MultiStepInput) => inputChallengeThought(input, state);
 	}
 
-	async function inputName(input: MultiStepInput, state: Partial<State>) {
+	async function inputChallengeThought(input: MultiStepInput, state: Partial<State>) {
 		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
 		// TODO: Remember current value when navigating back.
-		state.name = await input.showInputBox({
+		state.challengeThought = await input.showInputBox({
 			title,
 			step: 3 + additionalSteps,
 			totalSteps: 4 + additionalSteps,
-			value: state.name || '',
-			prompt: 'Choose a unique name for the Application Service',
+			value: state.challengeThought || '',
+			prompt: 'Challenge thought',
 			validate: validateNameIsUnique,
 			shouldResume: shouldResume
 		});
-		return (input: MultiStepInput) => pickRuntime(input, state);
+		return (input: MultiStepInput) => inputAlternativeThought(input, state);
+	}
+
+	async function inputAlternativeThought(input: MultiStepInput, state: Partial<State>) {
+		const additionalSteps = typeof state.challengeThought === 'string' ? 1 : 0;
+		// TODO: Remember current value when navigating back.
+		state.alternativeThought = await input.showInputBox({
+			title,
+			step: 4 + additionalSteps,
+			totalSteps: 4 + additionalSteps,
+			value: state.alternativeThought || '',
+			prompt: 'Alternative thought',
+			validate: validateNameIsUnique,
+			shouldResume: shouldResume
+		});
+		// return (input: MultiStepInput) => pickRuntime(input, state);
 	}
 
 	async function pickRuntime(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
+		const additionalSteps = typeof state.alternativeThought === 'string' ? 1 : 0;
 		const runtimes = await getAvailableRuntimes(state.resourceGroup!, undefined /* TODO: token */);
 		// TODO: Remember currently active item when navigating back.
 		state.runtime = await input.showQuickPick({
 			title,
-			step: 4 + additionalSteps,
-			totalSteps: 4 + additionalSteps,
+			step: 5 + additionalSteps,
+			totalSteps: 5 + additionalSteps,
 			placeholder: 'Pick a runtime',
 			items: runtimes,
 			activeItem: state.runtime,
@@ -124,7 +140,7 @@ export async function multiStepInput(context: ExtensionContext) {
 	}
 
 	const state = await collectInputs();
-	window.showInformationMessage(`Creating Application Service '${state.name}'`);
+	window.showInformationMessage(`Creating Application Service '${state.challengeThought} ${state.automaticThought}'`);
 }
 
 
