@@ -32,21 +32,37 @@ export async function multiStepInput(context: ExtensionContext) {
 		resourceGroup: QuickPickItem | string;
 		name: string;
 		runtime: QuickPickItem;
+		automaticThought:string;
 	}
 
 	async function collectInputs() {
 		const state = {} as Partial<State>;
-		await MultiStepInput.run(input => pickResourceGroup(input, state));
+		await MultiStepInput.run(input => inputAuthomaticaThought(input, state));
 		return state as State;
 	}
 
 	const title = 'Create Application Service';
 
-	async function pickResourceGroup(input: MultiStepInput, state: Partial<State>) {
-		const pick = await input.showQuickPick({
+	async function inputAuthomaticaThought(input: MultiStepInput, state: Partial<State>) {
+		// TODO: Remember current value when navigating back.
+		state.automaticThought = await input.showInputBox({
 			title,
 			step: 1,
-			totalSteps: 3,
+			totalSteps: 4,
+			value: state.automaticThought || '',
+			prompt: 'Automatic thought',
+			validate: validateNameIsUnique,
+			shouldResume: shouldResume
+		});
+		return (input: MultiStepInput) => pickResourceGroup(input, state);
+	}
+
+	async function pickResourceGroup(input: MultiStepInput, state: Partial<State>) {
+		const additionalSteps = typeof state.automaticThought === 'string' ? 1 : 0;
+		const pick = await input.showQuickPick({
+			title,
+			step: 2+additionalSteps,
+			totalSteps: 4+additionalSteps,
 			placeholder: 'Pick a resource group',
 			items: resourceGroups,
 			activeItem: typeof state.resourceGroup !== 'string' ? state.resourceGroup : undefined,
@@ -57,26 +73,13 @@ export async function multiStepInput(context: ExtensionContext) {
 		return (input: MultiStepInput) => inputName(input, state);
 	}
 
-	// async function inputResourceGroupName(input: MultiStepInput, state: Partial<State>) {
-	// 	state.resourceGroup = await input.showInputBox({
-	// 		title,
-	// 		step: 2,
-	// 		totalSteps: 4,
-	// 		value: typeof state.resourceGroup === 'string' ? state.resourceGroup : '',
-	// 		prompt: 'Choose a unique name for the resource group',
-	// 		validate: validateNameIsUnique,
-	// 		shouldResume: shouldResume
-	// 	});
-	// 	return (input: MultiStepInput) => inputName(input, state);
-	// }
-
 	async function inputName(input: MultiStepInput, state: Partial<State>) {
 		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
 		// TODO: Remember current value when navigating back.
 		state.name = await input.showInputBox({
 			title,
-			step: 2 + additionalSteps,
-			totalSteps: 3 + additionalSteps,
+			step: 3 + additionalSteps,
+			totalSteps: 4 + additionalSteps,
 			value: state.name || '',
 			prompt: 'Choose a unique name for the Application Service',
 			validate: validateNameIsUnique,
@@ -91,8 +94,8 @@ export async function multiStepInput(context: ExtensionContext) {
 		// TODO: Remember currently active item when navigating back.
 		state.runtime = await input.showQuickPick({
 			title,
-			step: 3 + additionalSteps,
-			totalSteps: 3 + additionalSteps,
+			step: 4 + additionalSteps,
+			totalSteps: 4 + additionalSteps,
 			placeholder: 'Pick a runtime',
 			items: runtimes,
 			activeItem: state.runtime,
