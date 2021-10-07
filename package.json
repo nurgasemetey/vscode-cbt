@@ -17,7 +17,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:cbt.createNote"
+		"onCommand:cbt.createNote",
+		"onCommand:cbt.openNotes"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -35,6 +36,10 @@
 			{
 				"command": "cbt.createNote",
 				"title": "Create CBT Note"
+			},
+			{
+				"command": "cbt.openNotes",
+				"title": "Open CBT Notes"
 			}
 		]
 	},
