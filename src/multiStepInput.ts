@@ -13,20 +13,20 @@ import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton,
 export async function multiStepInput(context: ExtensionContext) {
 
 	const resourceGroups: QuickPickItem[] = [
-		'All or Nothing Thinking', 
-		'Catastrophizing', 
-		'Emotional Reasoning', 
-		'Fortune Telling', 
-		'Labeling',
-		'Magnification of the Negative',
-		'Mind Reading',
-		'Minimization of the Positive',
-		'Other Blaming',
-		'Over Generalization',
-		'Self Blaming',
-		'Should Statements',
+		{"pattern":'All or Nothing Thinking', "example":"I bombed the interview, I must be unhirable."}, 
+		{"pattern":'Catastrophizing', "example":"I'm feeling jittery, I might be having a heart attack."}, 
+		{"pattern":'Emotional Reasoning', "example":"I feel guilty, therefore I must have done something bad."}, 
+		{"pattern":'Fortune Telling', "example":"The plane I'm about to get on will crash."}, 
+		{"pattern":'Labeling', "example":"I failed a test, so I'm a bad student."}, 
+		{"pattern":'Magnification of the Negative', "example":"I ate healthy this week, but I skipped my run."}, 
+		{"pattern":'Mind Reading', "example":"I think I was rude to George, I'll bet he hates me."}, 
+		{"pattern":'Minimization of the Positive', "example":"Many people liked my presentation, but I stumbled giving the intro, so it was bad."}, 
+		{"pattern":'Other Blaming', "example":"That jerk is taking too long in line and I'm going to be late!"}, 
+		{"pattern":'Over Generalization', "example":"No one asked me to dance, so no one ever will."}, 
+		{"pattern":'Self Blaming', "example":"My son is failing in school, I must have failed him."}, 
+		{"pattern":'Should Statements', "example":"I'm an adult, I shouldn't have these mental issues."}, 
 	]
-		.map(label => ({ label, /*description:"I bombed the interview, I must be unhirable.",*/ detail:"I bombed the interview, I must be unhirable." }));
+		.map(obj => ({ label:obj.pattern, /*description:"I bombed the interview, I must be unhirable.",*/ detail:obj.example}));
 
 	interface State {
 		title: string;
@@ -79,6 +79,7 @@ export async function multiStepInput(context: ExtensionContext) {
 
 	async function inputChallengeThought(input: MultiStepInput, state: Partial<State>) {
 		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
+		console.log(typeof state.resourceGroup === 'string');
 		// TODO: Remember current value when navigating back.
 		state.challengeThought = await input.showInputBox({
 			title,
@@ -208,6 +209,7 @@ class MultiStepInput {
 				input.totalSteps = totalSteps;
 				input.placeholder = placeholder;
 				input.items = items;
+				input.canSelectMany=false;
 				if (activeItem) {
 					input.activeItems = [activeItem];
 				}
