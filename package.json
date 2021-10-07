@@ -1,7 +1,7 @@
 {
-	"name": "quickinput-sample",
-	"displayName": "QuickInput Sample",
-	"description": "Samples for VS Code's QuickInput API",
+	"name": "cbt",
+	"displayName": "Cognitive Behavioral Therapy Extension",
+	"description": "Cognitive Behavioral Therapy Extension - tool for taking CBT notes",
 	"version": "0.0.1",
 	"publisher": "vscode-samples",
 	"private": true,

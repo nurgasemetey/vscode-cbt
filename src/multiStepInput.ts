@@ -4,7 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
-
+import {promises as fsp, existsSync} from 'fs';
+import { homedir } from 'os';
 /**
  * A multi-step input using window.createQuickPick() and window.createInputBox().
  * 
