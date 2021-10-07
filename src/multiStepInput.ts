@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, workspace } from 'vscode';
-import {promises as fsp, existsSync} from 'fs';
+import { promises as fsp, existsSync } from 'fs';
 import { homedir } from 'os';
 
 
@@ -15,15 +15,15 @@ import { homedir } from 'os';
  */
 export async function multiStepInput(context: ExtensionContext) {
 	const configFilePath = workspace
-      .getConfiguration()
-      .get("cbt.filePath");
+		.getConfiguration()
+		.get("cbt.filePath");
 	console.log(`defaultFilePath: ${configFilePath}`);
 
 	async function prepareFile() {
 		const filePath = getFilePath();
-	
+
 		if (!existsSync(filePath)) {
-		  await createNewNote(filePath);
+			await createNewNote(filePath);
 		}
 	}
 	function getFilePath() {
@@ -33,57 +33,57 @@ export async function multiStepInput(context: ExtensionContext) {
 			.replace("~/", homedir().concat("/"));
 		console.log(`configFilePath: ${configFilePath}`)
 		if (configFilePath) {
-		  return configFilePath;
+			return configFilePath;
 		} else {
-		  return homedir + "/cbt.md";
+			return homedir + "/cbt.md";
 		}
 	}
 
-	async function createNewNote(filePath:string) {
+	async function createNewNote(filePath: string) {
 		try {
 			await fsp.writeFile(filePath, "");
 		} catch (error) {
 			console.error(error);
 			return window.showErrorMessage(
-			`Cannot edit File in "${filePath}". Make sure the directory is present.`
+				`Cannot edit File in "${filePath}". Make sure the directory is present.`
 			);
 		}
 	}
 
-	async function appendToFileAtLine(filePath:string, content:string, lineNumber:number) {
+	async function appendToFileAtLine(filePath: string, content: string, lineNumber: number) {
 		try {
-		  const result = await fsp.readFile(filePath, "utf8");
-	
-		  var lines = result.toString().split("\n");
-		  lines.splice(lineNumber, 0, content);
-		  content = lines.join("\n");
-	
-		  await fsp.writeFile(filePath, content);
-		} catch (error:any) {
-		  if (error && error.code !== "ENOENT") {
-			console.error(error);
-			window.showErrorMessage("Cannot edit File.");
-		  }
+			const result = await fsp.readFile(filePath, "utf8");
+
+			let lines = result.toString().split("\n");
+			lines.splice(lineNumber, 0, content);
+			content = lines.join("\n");
+
+			await fsp.writeFile(filePath, content);
+		} catch (error: any) {
+			if (error && error.code !== "ENOENT") {
+				console.error(error);
+				window.showErrorMessage("Cannot edit File.");
+			}
 		}
-	  }
-	
+	}
+
 
 
 	const resourceGroups: QuickPickItem[] = [
-		{"pattern":'All or Nothing Thinking', "example":"I bombed the interview, I must be unhirable."}, 
-		{"pattern":'Catastrophizing', "example":"I'm feeling jittery, I might be having a heart attack."}, 
-		{"pattern":'Emotional Reasoning', "example":"I feel guilty, therefore I must have done something bad."}, 
-		{"pattern":'Fortune Telling', "example":"The plane I'm about to get on will crash."}, 
-		{"pattern":'Labeling', "example":"I failed a test, so I'm a bad student."}, 
-		{"pattern":'Magnification of the Negative', "example":"I ate healthy this week, but I skipped my run."}, 
-		{"pattern":'Mind Reading', "example":"I think I was rude to George, I'll bet he hates me."}, 
-		{"pattern":'Minimization of the Positive', "example":"Many people liked my presentation, but I stumbled giving the intro, so it was bad."}, 
-		{"pattern":'Other Blaming', "example":"That jerk is taking too long in line and I'm going to be late!"}, 
-		{"pattern":'Over Generalization', "example":"No one asked me to dance, so no one ever will."}, 
-		{"pattern":'Self Blaming', "example":"My son is failing in school, I must have failed him."}, 
-		{"pattern":'Should Statements', "example":"I'm an adult, I shouldn't have these mental issues."}, 
+		{ "pattern": 'All or Nothing Thinking', "example": "I bombed the interview, I must be unhirable." },
+		{ "pattern": 'Catastrophizing', "example": "I'm feeling jittery, I might be having a heart attack." },
+		{ "pattern": 'Emotional Reasoning', "example": "I feel guilty, therefore I must have done something bad." },
+		{ "pattern": 'Fortune Telling', "example": "The plane I'm about to get on will crash." },
+		{ "pattern": 'Labeling', "example": "I failed a test, so I'm a bad student." },
+		{ "pattern": 'Magnification of the Negative', "example": "I ate healthy this week, but I skipped my run." },
+		{ "pattern": 'Mind Reading', "example": "I think I was rude to George, I'll bet he hates me." },
+		{ "pattern": 'Minimization of the Positive', "example": "Many people liked my presentation, but I stumbled giving the intro, so it was bad." },
+		{ "pattern": 'Other Blaming', "example": "That jerk is taking too long in line and I'm going to be late!" },
+		{ "pattern": 'Over Generalization', "example": "No one asked me to dance, so no one ever will." },
+		{ "pattern": 'Self Blaming', "example": "My son is failing in school, I must have failed him." },
+		{ "pattern": 'Should Statements', "example": "I'm an adult, I shouldn't have these mental issues." },
 	]
-		.map(obj => ({ label:obj.pattern, detail:obj.example}));
+		.map(obj => ({ label: obj.pattern, detail: obj.example }));
 
 	interface State {
 		title: string;
@@ -92,8 +92,8 @@ export async function multiStepInput(context: ExtensionContext) {
 		resourceGroup: QuickPickItem | any;
 		challengeThought: string;
 		runtime: QuickPickItem;
-		automaticThought:string;
-		alternativeThought:string;
+		automaticThought: string;
+		alternativeThought: string;
 	}
 
 	async function collectInputs() {
@@ -122,8 +122,8 @@ export async function multiStepInput(context: ExtensionContext) {
 		const additionalSteps = state.automaticThought ? 1 : 0;
 		const pick = await input.showQuickPick({
 			title,
-			step: 2+additionalSteps,
-			totalSteps: 4+additionalSteps,
+			step: 2 + additionalSteps,
+			totalSteps: 4 + additionalSteps,
 			placeholder: 'Pick a pattern',
 			items: resourceGroups,
 			activeItem: state.automaticThought ? state.resourceGroup : undefined,
@@ -188,12 +188,12 @@ Pattern: ${state.resourceGroup.label}
 Challenge thought: ${state.challengeThought}
 Alternative thought: ${state.alternativeThought}`
 		await appendToFileAtLine(filePath, content, 0);
-	  } catch (error) {
+	} catch (error) {
 		console.error(error);
 		return window.showErrorMessage(
-		  "Cannot add to File."
+			"Cannot add to File."
 		);
-	  }
+	}
 	window.showInformationMessage(`Creating Application Service '${state.challengeThought} ${state.automaticThought} ${state.alternativeThought}'`);
 }
 
@@ -281,7 +281,7 @@ class MultiStepInput {
 				input.totalSteps = totalSteps;
 				input.placeholder = placeholder;
 				input.items = items;
-				input.canSelectMany=false;
+				input.canSelectMany = false;
 				if (activeItem) {
 					input.activeItems = [activeItem];
 				}
