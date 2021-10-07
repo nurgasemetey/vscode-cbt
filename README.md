@@ -1,4 +1,4 @@
-# VSCode Daily Notes
+# VSCode CBT
 
 An extension for creating CBT notes and viewing them.
 
