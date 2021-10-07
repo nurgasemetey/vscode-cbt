@@ -2,9 +2,10 @@
 	"name": "vscode-cbt",
 	"displayName": "Cognitive Behavioral Therapy",
 	"description": "Cognitive Behavioral Therapy Extension - tool for taking CBT notes",
-	"version": "0.0.4",
+	"version": "0.0.6",
 	"private": true,
 	"license": "MIT",
+	"icon": "images/icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/nurgasemetey/vscode-cbt"

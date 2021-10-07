@@ -7,9 +7,7 @@ An extension for creating CBT notes and viewing them.
 * Create a CBT note
 * View all CBT notes
 
-![Feature](images/feature.gif)
-
-![Feature](images/highlighted-tags.jpg)
+![Demo](images/demo.gif)
 
 ## Usage
 

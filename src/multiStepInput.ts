@@ -145,7 +145,7 @@ Alternative thought: ${state.alternativeThought}`
 			"Cannot add to File."
 		);
 	}
-	window.showInformationMessage(`Creating Application Service '${state.challengeThought} ${state.automaticThought} ${state.alternativeThought}'`);
+	window.showInformationMessage(`CBT Note Created`);
 }
 
 
