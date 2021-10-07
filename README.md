@@ -1,6 +1,7 @@
 # VSCode CBT
 
-An extension for creating CBT notes and viewing them.
+An extension for creating CBT notes and viewing them. More info about it - [Cognitive behavioral therapy
+(CBT)](https://en.wikipedia.org/wiki/Cognitive_behavioral_therapy).
 
 ## Features
 
