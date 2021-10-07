@@ -1,14 +1,13 @@
 {
-	"name": "cbt",
-	"displayName": "Cognitive Behavioral Therapy Extension",
+	"name": "vscode-cbt",
+	"displayName": "Cognitive Behavioral Therapy",
 	"description": "Cognitive Behavioral Therapy Extension - tool for taking CBT notes",
-	"version": "0.0.1",
-	"publisher": "vscode-samples",
+	"version": "0.0.4",
 	"private": true,
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/nurgasemetey/vscode-cbt"
 	},
 	"engines": {
 		"vscode": "^1.32.0"
@@ -21,6 +20,14 @@
 		"onCommand:cbt.openNotes"
 	],
 	"main": "./out/extension.js",
+	"keywords": [
+		"cbt",
+		"ognitive behavioral therapy",
+		"journal",
+		"mental wellness",
+		"psychology"
+	  ],
+	"publisher": "nurgasemetey",
 	"contributes": {
 		"configuration": {
 			"title": "CBT",

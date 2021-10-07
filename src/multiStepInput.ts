@@ -3,9 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, workspace } from 'vscode';
-import { promises as fsp, existsSync } from 'fs';
-import { homedir } from 'os';
+import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, workspace } from 'vscode';
 import {prepareFile,getFilePath,appendToFileAtLine} from "./utils"
 
 
