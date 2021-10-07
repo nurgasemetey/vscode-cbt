@@ -117,8 +117,7 @@ export async function multiStepInput(context: ExtensionContext) {
 
 	async function validateNameIsUnique(name: string) {
 		// ...validate...
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		return name === 'vscode' ? 'Name not unique' : undefined;
+		return undefined;
 	}
 
 	const state = await collectInputs();
