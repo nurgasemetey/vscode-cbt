@@ -21,6 +21,16 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "CBT",
+			"properties": {
+			  "cbt.filePath": {
+				"type": "string",
+				"default": "",
+				"description": "Set the exact location of the file"
+			  }
+			}
+		  },
 		"commands": [
 			{
 				"command": "samples.quickInput",

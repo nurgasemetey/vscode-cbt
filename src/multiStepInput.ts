@@ -3,15 +3,71 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
+import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, workspace } from 'vscode';
 import {promises as fsp, existsSync} from 'fs';
 import { homedir } from 'os';
+
+
 /**
  * A multi-step input using window.createQuickPick() and window.createInputBox().
  * 
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
 export async function multiStepInput(context: ExtensionContext) {
+	const configFilePath = workspace
+      .getConfiguration()
+      .get("cbt.filePath");
+	console.log(`defaultFilePath: ${configFilePath}`);
+
+	async function prepareFile() {
+		const filePath = getFilePath();
+	
+		if (!existsSync(filePath)) {
+		  await createNewNote(filePath);
+		}
+	}
+	function getFilePath() {
+		const configFilePath = (workspace
+			.getConfiguration()
+			.get("cbt.filePath") as string)
+			.replace("~/", homedir().concat("/"));
+		console.log(`configFilePath: ${configFilePath}`)
+		if (configFilePath) {
+		  return configFilePath;
+		} else {
+		  return homedir + "/cbt.md";
+		}
+	}
+
+	async function createNewNote(filePath:string) {
+		try {
+			await fsp.writeFile(filePath, "");
+		} catch (error) {
+			console.error(error);
+			return window.showErrorMessage(
+			`Cannot edit Daily Notes File in "${filePath}". Make sure the directory is present.`
+			);
+		}
+	}
+
+	async function appendToFileAtLine(filePath:string, content:string, lineNumber:number) {
+		try {
+		  const result = await fsp.readFile(filePath, "utf8");
+	
+		  var lines = result.toString().split("\n");
+		  lines.splice(lineNumber, 0, content);
+		  content = lines.join("\n");
+	
+		  await fsp.writeFile(filePath, content);
+		} catch (error:any) {
+		  if (error && error.code !== "ENOENT") {
+			console.error(error);
+			window.showErrorMessage("Cannot edit Daily Notes File.");
+		  }
+		}
+	  }
+	
+
 
 	const resourceGroups: QuickPickItem[] = [
 		{"pattern":'All or Nothing Thinking', "example":"I bombed the interview, I must be unhirable."}, 
@@ -122,6 +178,16 @@ export async function multiStepInput(context: ExtensionContext) {
 	}
 
 	const state = await collectInputs();
+	try {
+		await prepareFile();
+		const filePath = getFilePath();
+		await appendToFileAtLine(filePath, `${state.challengeThought} ${state.automaticThought} ${state.alternativeThought}`, 0);
+	  } catch (error) {
+		console.error(error);
+		return window.showErrorMessage(
+		  "Cannot edit Daily Notes File."
+		);
+	  }
 	window.showInformationMessage(`Creating Application Service '${state.challengeThought} ${state.automaticThought} ${state.alternativeThought}'`);
 }
 
