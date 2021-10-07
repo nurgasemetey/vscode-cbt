@@ -12,8 +12,21 @@ import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton,
  */
 export async function multiStepInput(context: ExtensionContext) {
 
-	const resourceGroups: QuickPickItem[] = ['vscode-data-function', 'vscode-appservice-microservices', 'vscode-appservice-monitor', 'vscode-appservice-preview', 'vscode-appservice-prod']
-		.map(label => ({ label }));
+	const resourceGroups: QuickPickItem[] = [
+		'All or Nothing Thinking', 
+		'Catastrophizing', 
+		'Emotional Reasoning', 
+		'Fortune Telling', 
+		'Labeling',
+		'Magnification of the Negative',
+		'Mind Reading',
+		'Minimization of the Positive',
+		'Other Blaming',
+		'Over Generalization',
+		'Self Blaming',
+		'Should Statements',
+	]
+		.map(label => ({ label, /*description:"I bombed the interview, I must be unhirable.",*/ detail:"I bombed the interview, I must be unhirable." }));
 
 	interface State {
 		title: string;
