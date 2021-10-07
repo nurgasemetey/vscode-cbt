@@ -17,7 +17,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:samples.quickInput"
+		"onCommand:cbt.createNote"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -33,8 +33,8 @@
 		},
 		"commands": [
 			{
-				"command": "samples.quickInput",
-				"title": "Quick Input Samples"
+				"command": "cbt.createNote",
+				"title": "Create CBT Note"
 			}
 		]
 	},

@@ -7,7 +7,7 @@ import { window, commands, ExtensionContext } from 'vscode';
 import { multiStepInput } from './multiStepInput';
 
 export function activate(context: ExtensionContext) {
-	context.subscriptions.push(commands.registerCommand('samples.quickInput', async () => {
+	context.subscriptions.push(commands.registerCommand('cbt.createNote', async () => {
 		multiStepInput(context).catch(console.error);
 	}));
 }

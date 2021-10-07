@@ -67,8 +67,6 @@ export async function multiStepInput(context: ExtensionContext) {
 		}
 	}
 
-
-
 	const resourceGroups: QuickPickItem[] = [
 		{ "pattern": 'All or Nothing Thinking', "example": "I bombed the interview, I must be unhirable." },
 		{ "pattern": 'Catastrophizing', "example": "I'm feeling jittery, I might be having a heart attack." },
@@ -102,7 +100,7 @@ export async function multiStepInput(context: ExtensionContext) {
 		return state as State;
 	}
 
-	const title = 'Create Application Service';
+	const title = 'Create CBT Note';
 
 	async function inputAuthomaticaThought(input: MultiStepInput, state: Partial<State>) {
 		// TODO: Remember current value when navigating back.
