@@ -45,7 +45,7 @@ export async function multiStepInput(context: ExtensionContext) {
 		} catch (error) {
 			console.error(error);
 			return window.showErrorMessage(
-			`Cannot edit Daily Notes File in "${filePath}". Make sure the directory is present.`
+			`Cannot edit File in "${filePath}". Make sure the directory is present.`
 			);
 		}
 	}
@@ -62,7 +62,7 @@ export async function multiStepInput(context: ExtensionContext) {
 		} catch (error:any) {
 		  if (error && error.code !== "ENOENT") {
 			console.error(error);
-			window.showErrorMessage("Cannot edit Daily Notes File.");
+			window.showErrorMessage("Cannot edit File.");
 		  }
 		}
 	  }
@@ -89,7 +89,7 @@ export async function multiStepInput(context: ExtensionContext) {
 		title: string;
 		step: number;
 		totalSteps: number;
-		resourceGroup: QuickPickItem | string;
+		resourceGroup: QuickPickItem | any;
 		challengeThought: string;
 		runtime: QuickPickItem;
 		automaticThought:string;
@@ -119,14 +119,14 @@ export async function multiStepInput(context: ExtensionContext) {
 	}
 
 	async function pickResourceGroup(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.automaticThought === 'string' ? 1 : 0;
+		const additionalSteps = state.automaticThought ? 1 : 0;
 		const pick = await input.showQuickPick({
 			title,
 			step: 2+additionalSteps,
 			totalSteps: 4+additionalSteps,
 			placeholder: 'Pick a pattern',
 			items: resourceGroups,
-			activeItem: typeof state.resourceGroup !== 'string' ? state.resourceGroup : undefined,
+			activeItem: state.automaticThought ? state.resourceGroup : undefined,
 			// buttons: [createResourceGroupButton],
 			shouldResume: shouldResume
 		});
@@ -181,11 +181,17 @@ export async function multiStepInput(context: ExtensionContext) {
 	try {
 		await prepareFile();
 		const filePath = getFilePath();
-		await appendToFileAtLine(filePath, `${state.challengeThought} ${state.automaticThought} ${state.alternativeThought}`, 0);
+		const content = `
+Date: ${new Date()}
+Automatic thought: ${state.automaticThought}
+Pattern: ${state.resourceGroup.label}
+Challenge thought: ${state.challengeThought}
+Alternative thought: ${state.alternativeThought}`
+		await appendToFileAtLine(filePath, content, 0);
 	  } catch (error) {
 		console.error(error);
 		return window.showErrorMessage(
-		  "Cannot edit Daily Notes File."
+		  "Cannot add to File."
 		);
 	  }
 	window.showInformationMessage(`Creating Application Service '${state.challengeThought} ${state.automaticThought} ${state.alternativeThought}'`);
