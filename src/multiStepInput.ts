@@ -26,7 +26,7 @@ export async function multiStepInput(context: ExtensionContext) {
 		{"pattern":'Self Blaming', "example":"My son is failing in school, I must have failed him."}, 
 		{"pattern":'Should Statements', "example":"I'm an adult, I shouldn't have these mental issues."}, 
 	]
-		.map(obj => ({ label:obj.pattern, /*description:"I bombed the interview, I must be unhirable.",*/ detail:obj.example}));
+		.map(obj => ({ label:obj.pattern, detail:obj.example}));
 
 	interface State {
 		title: string;
