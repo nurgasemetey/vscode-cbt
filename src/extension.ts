@@ -9,7 +9,20 @@ import {prepareFile,getFilePath} from "./utils"
 
 export function activate(context: ExtensionContext) {
 	context.subscriptions.push(commands.registerCommand('cbt.createNote', async () => {
-		multiStepInput(context).catch(console.error);
+		try {
+			await multiStepInput(context);
+			
+			await prepareFile();
+			const filePath = getFilePath();
+
+			workspace.openTextDocument(filePath).then((doc) => {
+				window.showTextDocument(doc);
+			});
+		} catch(err) {
+			window.showErrorMessage(
+				"Cannot add to File."
+			);
+		}
 	}));
 
 	context.subscriptions.push(commands.registerCommand('cbt.openNotes', async () => {
