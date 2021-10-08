@@ -78,7 +78,7 @@ export async function multiStepInput(context: ExtensionContext) {
 			totalSteps: 4 + additionalSteps,
 			placeholder: 'Select any distortions that apply.',
 			items: resourceGroups,
-			activeItem: state.automaticThought ? state.resourceGroup : undefined,
+			activeItem: state.resourceGroup ? state.resourceGroup : undefined,
 			// buttons: [createResourceGroupButton],
 			shouldResume: shouldResume
 		});
@@ -87,9 +87,11 @@ export async function multiStepInput(context: ExtensionContext) {
 	}
 
 	async function inputChallengeThought(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.resourceGroup.label !== 'string' ? 1 : 0;
-		console.log(typeof state.resourceGroup === 'string');
+		const additionalSteps = typeof state.resourceGroup ? 1 : 0;
+		// console.log(typeof state.resourceGroup === 'string');
 		// TODO: Remember current value when navigating back.
+		console.log(`state.challengeThought: ${state.challengeThought}`)
+
 		state.challengeThought = await input.showInputBox({
 			title,
 			step: 3 + additionalSteps,
@@ -136,11 +138,19 @@ export async function multiStepInput(context: ExtensionContext) {
 		await prepareFile();
 		const filePath = getFilePath();
 		const content = `
-Date: ${new Date()}
+Date: ${new Date().toISOString()}
+
 Automatic thought: ${state.automaticThought}
+
 Pattern: ${state.resourceGroup.label}
+
 Challenge thought: ${state.challengeThought}
-Alternative thought: ${state.alternativeThought}`
+
+Alternative thought: ${state.alternativeThought}
+
+---
+
+`
 		await appendToFileAtLine(filePath, content, 0);
 	} catch (error) {
 		console.error(error);
