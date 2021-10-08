@@ -63,6 +63,7 @@ export async function multiStepInput(context: ExtensionContext) {
 			totalSteps: 4,
 			value: state.automaticThought || '',
 			prompt: 'Automatic thought',
+			placeholder: "ex: 'The plane might crash'",
 			validate: validateNameIsUnique,
 			shouldResume: shouldResume
 		});
@@ -70,12 +71,12 @@ export async function multiStepInput(context: ExtensionContext) {
 	}
 
 	async function pickResourceGroup(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = state.automaticThought ? 1 : 0;
+		const additionalSteps = typeof state.automaticThought !== 'string' ? 1 : 0;
 		const pick = await input.showQuickPick({
 			title,
 			step: 2 + additionalSteps,
 			totalSteps: 4 + additionalSteps,
-			placeholder: 'Pick a pattern',
+			placeholder: 'Select any distortions that apply.',
 			items: resourceGroups,
 			activeItem: state.automaticThought ? state.resourceGroup : undefined,
 			// buttons: [createResourceGroupButton],
@@ -86,7 +87,7 @@ export async function multiStepInput(context: ExtensionContext) {
 	}
 
 	async function inputChallengeThought(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
+		const additionalSteps = typeof state.resourceGroup.label !== 'string' ? 1 : 0;
 		console.log(typeof state.resourceGroup === 'string');
 		// TODO: Remember current value when navigating back.
 		state.challengeThought = await input.showInputBox({
@@ -95,6 +96,7 @@ export async function multiStepInput(context: ExtensionContext) {
 			totalSteps: 4 + additionalSteps,
 			value: state.challengeThought || '',
 			prompt: 'Challenge thought',
+			placeholder:'It might not be true that...',
 			validate: validateNameIsUnique,
 			shouldResume: shouldResume
 		});
@@ -102,7 +104,7 @@ export async function multiStepInput(context: ExtensionContext) {
 	}
 
 	async function inputAlternativeThought(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.challengeThought === 'string' ? 1 : 0;
+		const additionalSteps = typeof state.challengeThought !== 'string' ? 1 : 0;
 		// TODO: Remember current value when navigating back.
 		state.alternativeThought = await input.showInputBox({
 			title,
@@ -110,6 +112,7 @@ export async function multiStepInput(context: ExtensionContext) {
 			totalSteps: 4 + additionalSteps,
 			value: state.alternativeThought || '',
 			prompt: 'Alternative thought',
+			placeholder:'What could we think instead?',
 			validate: validateNameIsUnique,
 			shouldResume: shouldResume
 		});
@@ -179,6 +182,7 @@ interface InputBoxParameters {
 	totalSteps: number;
 	value: string;
 	prompt: string;
+	placeholder:string;
 	validate: (value: string) => Promise<string | undefined>;
 	buttons?: QuickInputButton[];
 	shouldResume: () => Thenable<boolean>;
@@ -267,7 +271,7 @@ class MultiStepInput {
 		}
 	}
 
-	async showInputBox<P extends InputBoxParameters>({ title, step, totalSteps, value, prompt, validate, buttons, shouldResume }: P) {
+	async showInputBox<P extends InputBoxParameters>({ title, step, totalSteps, value, prompt, placeholder, validate, buttons, shouldResume }: P) {
 		const disposables: Disposable[] = [];
 		try {
 			return await new Promise<string | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
@@ -275,6 +279,7 @@ class MultiStepInput {
 				input.title = title;
 				input.step = step;
 				input.totalSteps = totalSteps;
+				input.placeholder= placeholder
 				input.value = value || '';
 				input.prompt = prompt;
 				input.buttons = [
